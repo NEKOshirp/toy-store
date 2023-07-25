@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+  /* Basic table styles */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Header styles */
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  /* Image cell styles */
+  td img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  /* Action cell styles */
+  td:last-child {
+    text-align: center;
+  }
+
+  /* Styling the action buttons */
+  .action-btn {
+    padding: 6px 12px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .action-btn.edit {
+    background-color: #2196F3;
+  }
+
+  .action-btn.delete {
+    background-color: #f44336;
+  }
+</style>
+<body>
+    <table>
+        <tr>
+
+
+<th>Name</th>
+
+<th>Price</th>
+
+<th>Image</th>
+
+<th width="280px">Action</th>
+
+</tr>
+<tr>
+
+{{#each products}}
+          <td> {{name}} </td>
+          <td> {{price}} </td> 
+{{/each}}
+
+</tr>
+</table>
+        <li><a href="/product">New product</a></li>
+    
+</body>
+</html>

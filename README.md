@@ -1,2 +1,0 @@
-# toy-store
-toy store
