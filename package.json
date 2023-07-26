@@ -16,7 +16,7 @@
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.1"
   },
-  "engine": {
+  "engines": {
     "node": ">=17"
   }
 }
