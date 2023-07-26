@@ -117,5 +117,5 @@ app.post('/help', (req, res) => {
 
 // Khởi động server
 app.listen(PORT, () => {
-  console.log(`Ứng dụng đang chạy tại http://localhost:${port}`);
+  console.log(`Ứng dụng đang chạy tại http://localhost:${PORT}`);
 });
