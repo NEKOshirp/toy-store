@@ -43,19 +43,22 @@ app.post('/add', async (req, res) => {
     res.status(400).json({ message: err.message });
   }   
 });
-app.post('/update', async (req, res) => {
-  const productId = req.params.id;
-  const { name, price } = req.body;
+// API để cập nhật thông tin sản phẩm theo ID
+app.put('/update/:id', async (req, res) => {
   try {
+    const { id } = req.params;
+    const { name, price } = req.body;
     const updatedFields = {};
+
     if (name) {
       updatedFields.name = name;
     }
     if (price) {
       updatedFields.price = parseFloat(price);
     }
-    
-    const modifiedCount = await updateProduct(productId, updatedFields);
+
+    const modifiedCount = await updateProduct(id, updatedFields);
+
     if (modifiedCount > 0) {
       res.redirect('/listproduct');
     } else {
@@ -65,10 +68,12 @@ app.post('/update', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-app.post('/delete', async (req, res) => {
-  const productId = req.params.id;
+// API để xóa sản phẩm theo ID
+app.delete('/delete/:id', async (req, res) => {
   try {
-    const deletedCount = await deleteProduct(productId);
+    const { id } = req.params;
+    const deletedCount = await deleteProduct(id);
+
     if (deletedCount > 0) {
       res.redirect('/listproduct');
     } else {
@@ -78,6 +83,7 @@ app.post('/delete', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
 
 
 app.get('/product', (req, res) => {
