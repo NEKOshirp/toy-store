@@ -11,21 +11,30 @@ async function createProduct(item) {
     const db = getDatabase();
     const result = await db.collection(collectionName).insertOne(item);
     return result;
-  }
-  async function updateProduct(productId, updatedFields) {
-    const db = getDatabase();
-    const result = await db.collection(collectionName).updateOne(
-      { _id: ObjectID(productId) },
-      { $set: updatedFields }
-    );
-    return result.modifiedCount;
-  }
+}
+async function getProductById(productId) {
+  const db = getDatabase();
+  const product = await db.collection(collectionName).findOne({ _id: productId });
+  return product;
+}
+
+async function editProduct(productId, updatedItem) {
+  const db = getDatabase();
+  const result = await db.collection(collectionName).updateOne(
+    { _id: productId },
+    { $set: updatedItem }
+  );
+  return result;
+}
+
   
+  // Function to delete a product from the database by ID
   async function deleteProduct(productId) {
     const db = getDatabase();
-    const result = await db.collection(collectionName).deleteOne({ _id: ObjectID(productId) });
-    return result.deletedCount;
+    const result = await db.collection(collectionName).deleteOne({ _id: productId });
+    return result;
   }
   
-  module.exports = { getProducts, createProduct, updateProduct, deleteProduct };
+  
+  module.exports = { getProducts, createProduct, getProductById, editProduct, deleteProduct };
 

@@ -32,14 +32,12 @@
         </tr>
         {{#each products}}
         <tr>
-            <td>{{this.name}}</td>
-            <td>${{this.price}}</td>
+            <td>{{name}}</td>
+            <td>${{price}}</td>
             >
             <td>
-                <a href="/edit/{{this._id}}">Edit</a>
-                <form action="/delete/{{this._id}}" method="post" style="display: inline;">
-                    <button type="submit">Delete</button>
-                </form>
+                <a href="/edit/{{_id}}">edit</a>
+        <a href="/delete/{{_id}}">delete</a>
             </td>
         </tr>
         {{/each}}

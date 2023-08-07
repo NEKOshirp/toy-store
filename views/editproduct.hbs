@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sửa sản phẩm</title>
+</head>
+<body>
+  <h1>Sửa sản phẩm</h1>
+  <form action="/edit/{{product._id}}" method="post">
+    <label for="name">Tên sản phẩm:</label>
+    <input type="text" name="name" id="name" value="{{product.name}}" required>
+    <label for="price">Giá:</label>
+    <input type="number" name="price" id="price" value="{{product.price}}" required>
+    <button type="submit">Lưu</button>
+  </form>
+</body>
+</html>

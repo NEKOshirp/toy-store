@@ -2,19 +2,19 @@ const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
-
+const bcrypt = require('bcrypt');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 const { connectToDatabase } = require('./db');
-const { getProducts,createProduct } = require('./product');
+const { getProducts,createProduct,getProductById, editProduct, deleteProduct} = require('./product');
 
 connectToDatabase();
- 
 // Cấu hình sử dụng Handlebars
 
 app.use(bodyParser.json());
@@ -43,52 +43,37 @@ app.post('/add', async (req, res) => {
     res.status(400).json({ message: err.message });
   }   
 });
-// API để cập nhật thông tin sản phẩm theo ID
-app.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, price } = req.body;
-    const updatedFields = {};
+app.get('/edit/:id', async (req, res) => {
+  const productId = req.params.id;
+  const product = await db.getProductById(productId);
 
-    if (name) {
-      updatedFields.name = name;
-    }
-    if (price) {
-      updatedFields.price = parseFloat(price);
-    }
-
-    const modifiedCount = await updateProduct(id, updatedFields);
-
-    if (modifiedCount > 0) {
-      res.redirect('/listproduct');
-    } else {
-      res.status(404).json({ message: 'Product not found or no changes were made.' });
-    }
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  if (!product) {
+    return res.status(404).send('Sản phẩm không tồn tại.');
   }
-});
-// API để xóa sản phẩm theo ID
-app.delete('/delete/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedCount = await deleteProduct(id);
 
-    if (deletedCount > 0) {
-      res.redirect('/listproduct');
-    } else {
-      res.status(404).json({ message: 'Product not found or already deleted.' });
-    }
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  res.render('editproduct', { product });
 });
+
+// Route handler để xử lý khi người dùng yêu cầu xóa sản phẩm
+app.get('/delete/:name', async (req, res) => {
+  const productname = req.params.name;
+
+  const deleted = await db.deleteProduct(productname);
+
+  if (!deleted) {
+    return res.status(404).send('Sản phẩm không tồn tại.');
+  }
+
+  res.redirect('/listproduct');
+});
+
 
 
 
 app.get('/product', (req, res) => {
   res.render('product');
 });
+
 
 // Route cho trang chủ
 app.get('/', (req, res) => {
@@ -104,17 +89,14 @@ app.get('/about', (req, res) => {
 app.get('/help', (req, res) => {
   res.render('help');
 });
-
-// Route cho trang signin
+// Route cho trang help
 app.get('/signin', (req, res) => {
-    res.render('signin');
-  });
-
-  // Route cho trang signup
+  res.render('signin');
+});
+// Route cho trang help
 app.get('/signup', (req, res) => {
-    res.render('signup');
-  });
-
+  res.render('signup');
+});
 // Xử lý form trong trang help
 app.post('/help', (req, res) => {
   const email = req.body.email;
