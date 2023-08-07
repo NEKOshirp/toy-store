@@ -21,6 +21,9 @@ mongoose.connect('mongodb+srv://truong:truong2001@cluster0.g2wdmun.mongodb.net/t
   console.error('Lỗi kết nối MongoDB:', err);
 });
 
+
+
+
 // Định nghĩa Schema và Model cho sản phẩm
 const productSchema = new mongoose.Schema({
   name: {
