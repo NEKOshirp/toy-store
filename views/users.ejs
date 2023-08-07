@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang quản lý tài khoản người dùng</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Bên tay trái */
+    .sidebar {
+      background-color: #343a40;
+      color: #fff;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      padding-top: 20px;
+    }
+
+    .sidebar-item {
+      padding: 10px;
+      border-bottom: 1px solid #4d5256;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-item:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-item a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .sidebar-item a:hover {
+      color: #007bff;
+    }
+
+    /* Nội dung chính */
+    .main-content {
+      margin-left: 220px;
+      padding: 20px;
+    }
+
+    .table {
+      margin-top: 20px;
+    }
+
+    .table th {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nội dung HTML của trang quản lý tài khoản người dùng -->
+  <div class="sidebar">
+    <div class="sidebar-item">
+      <a href="#users">Tài khoản người dùng</a>
+    </div>
+    <div class="sidebar-item">
+      <a href="#products">Sản phẩm</a>
+    </div>
+  </div>
+
+  <div class="container main-content">
+    <h1 class="my-4">Trang quản lý tài khoản người dùng</h1>
+
+    <!-- Danh sách tài khoản người dùng -->
+    <h2 id="users">Danh sách tài khoản người dùng</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Tên đăng nhập</th>
+          <th scope="col">Email</th>
+          <th scope="col">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+          <tr>
+            <td><%= user._id %></td>
+            <td><%= user.username %></td>
+            <td><%= user.email %></td>
+            <td>
+              <a href="/admin/user/edit/<%= user._id %>" class="btn btn-primary">Sửa</a>
+              <form action="/admin/user/delete/<%= user._id %>" method="POST" style="display: inline-block;">
+                <button type="submit" class="btn btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

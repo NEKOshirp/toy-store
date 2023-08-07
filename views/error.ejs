@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lỗi</title>
+</head>
+<body>
+  <style>
+    /* CSS để căn giữa ảnh và thẻ <p> */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh; /* Chiều cao của viewport */
+    }
+
+    img {
+      max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng của trang */
+      margin-bottom: 20px; /* Khoảng cách giữa ảnh và thẻ <p> */
+    }
+
+    /* CSS cho nút "Back" */
+    .back-button {
+      background-color: #007bff; /* Màu nền */
+      color: #fff; /* Màu chữ */
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #0056b3; /* Màu nền khi di chuột qua */
+    }
+  </style>
+  <p><%= message %></p>
+  <!-- Chèn ảnh vào đây -->
+  <img src="/img/meme.png" alt="Ảnh minh họa">
+
+  <!-- Nút "Back" -->
+  <a href="/" class="back-button">Bấm Vào Đây Để Không Bị Chó Cắn</a>
+</body>
+</html>

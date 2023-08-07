@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chủ</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Thư viện Font Awesome để sử dụng biểu tượng giỏ hàng -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Thư viện Font Awesome để sử dụng biểu tượng danh mục -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Trang chủ</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+<!-- Mã HTML cho thanh tìm kiếm -->
+<div class="search-box">
+  <input type="text" placeholder="Tìm kiếm sản phẩm..." id="searchInput" style="margin-left: 350px;">
+  <span class="search-icon" onclick="searchProduct()">
+  </span>
+</div>
+  <!-- Kết thúc mã HTML cho thanh tìm kiếm -->
+<div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <div class="dropdown">
+            <!-- Danh mục sản phẩm -->
+            <a class="nav-link dropdown-toggle" href="#" id="danhMucDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-list"></i> Danh mục
+            </a>
+            <div class="dropdown-menu" aria-labelledby="danhMucDropdown">
+              <!-- Các mục sản phẩm trong dropdown -->
+              <a class="dropdown-item" href="#">Đồ Chơi Giảm Giá</a>
+              <a class="dropdown-item" href="#">Đồ Chơi Dành Cho Bé Trai</a>
+              <a class="dropdown-item" href="#">Đồ Chơi Dành Cho Bé Gái</a>
+              <!-- Thêm các loại sản phẩm khác tại đây -->
+            </div>
+          </div>
+        </li>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <% if (loggedIn) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin">Quản lý</a>
+          </li>
+          <li class="nav-item">
+            <!-- Thêm biểu tượng giỏ hàng và số lượng sản phẩm -->
+            <span class="nav-link" id="cartIcon" data-toggle="modal" data-target="#cartModal">
+              <i class="fas fa-shopping-cart"></i>(<span id="cartItemCount">0</span>)
+            </span>
+          </li>
+          <li class="nav-item">
+            <form action="/logout" method="POST">
+              <button type="submit" class="btn btn-link nav-link">Đăng xuất</button>
+            </form>
+          </li>
+        <% } else { %>
+          <!-- Nút "Đăng nhập" -->
+          <li class="nav-item">
+            <span class="nav-link" data-toggle="modal" data-target="#loginModal">Đăng nhập</span>
+          </li>
+          <!-- Nút "Đăng ký" -->
+          <li class="nav-item">
+            <span class="nav-link" data-toggle="modal" data-target="#registerModal">Đăng ký</span>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="img-container">
+    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1159990/toy1.jpg">
+  </div>
+  <!-- Danh sách sản phẩm -->
+  <div class="container">
+    <h1 class="my-4">Danh sách sản phẩm</h1>
+    <div class="row">
+      <% products.forEach((product) => { %>
+        <div class="col-md-3 mb-4">
+          <div class="card">
+            <% if (product.imageUrl) { %>
+              <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
+            <% } %>
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text">Giá: <%= product.price %></p>
+              <!-- Nút "Thêm vào giỏ hàng" với ID sản phẩm tương ứng -->
+              <button class="btn btn-primary" onclick="addToCart('<%= product._id %>')">Thêm vào giỏ hàng</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- Giỏ hàng - Khung Modal -->
+  <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cartModalLabel">Giỏ hàng</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Tổng số lượng sản phẩm trong giỏ hàng: <span id="cartItemCountModal">0</span></p>
+          <ul id="cartItemsListModal">
+            <!-- Danh sách sản phẩm trong giỏ hàng sẽ được hiển thị ở đây -->
+          </ul>
+          <p>Tổng tiền: <span id="cartTotalModal">0</span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-primary" onclick="checkout()">Thanh toán</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Khung đăng ký - Modal -->
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form đăng ký sẽ được đặt ở đây -->
+          <form action="/register" method="POST">
+            <!-- Thêm các trường đăng ký, ví dụ: -->
+            <div class="form-group">
+              <label for="username">Tên đăng nhập:</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Mật khẩu:</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Xác nhận mật khẩu:</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Đăng ký</button>
+          </form>
+        </div>
+        <!-- Không có footer trong hộp thoại modal -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Đăng nhập - Khung Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form đăng nhập sẽ được đặt ở đây -->
+          <form action="/login" method="POST">
+            <!-- Thêm các trường đăng nhập, ví dụ: -->
+            <div class="form-group">
+              <label for="username">Tên đăng nhập:</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Mật khẩu:</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+          </form>
+        </div>
+        <!-- Không có footer trong hộp thoại modal -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="/js/script.js"></script>
+  <footer>
+    <div class="container">
+      <section class="grid">
+        <div class="column-xs-12">
+          <ul class="footer-nav">
+            <li><a href="https://twitter.com/kato_katherine"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="https://www.instagram.com/kathy.kato"><i class="fab fa-instagram"></i></a></li>
+          </ul>
+        </div>
+        <div class="column-xs-12">
+          <p class="copyright">&copy; <a href="https://photos.icons8.com/" target="_blank">Icons8</a>.</p>
+        </div>
+      </section>
+    </div>
+  </footer>
+  
+
+</body>
+</html>

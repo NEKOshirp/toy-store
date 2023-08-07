@@ -1,0 +1,185 @@
+ /* Điều chỉnh kích thước của các ảnh sản phẩm */
+ .card-img-top {
+  height: 200px; /* Điều chỉnh chiều cao tùy ý */
+  object-fit: cover; /* Đảm bảo ảnh không bị méo khi điều chỉnh kích thước */
+}
+/* Tùy chỉnh CSS cho thanh tìm kiếm */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.search-box input[type="text"] {
+  width: 300px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 auto; /* Căn giữa theo chiều ngang */
+}
+
+.search-box .search-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}
+.card {
+border: 1px solid #ddd;
+border-radius: 10px;
+margin-bottom: 20px;
+overflow: hidden;
+position: relative;
+}
+
+.card-img-top {
+height: 200px;
+object-fit: cover;
+transition: transform 0.3s; /* Thêm hiệu ứng transition cho ảnh */
+}
+
+.card:hover .card-img-top {
+transform: scale(1.1); /* Hiệu ứng phóng to khi di chuột vào ảnh */
+}
+
+.card-body {
+background-color: #f8f9fa;
+padding: 20px;
+}
+
+/* CSS để căn giữa thanh tìm kiếm */
+.search-box {
+position: relative;
+display: flex;
+align-items: center; /* Căn giữa theo chiều dọc */
+margin-bottom:0; /* Tạo khoảng cách với các phần tử khác */
+}
+
+#searchInput {
+padding-right: 40px; /* Để tạo khoảng trống bên phải cho icon kính lúp */
+}
+
+.search-icon {
+position: absolute;
+top: 50%;
+right: 10px;
+transform: translateY(-50%);
+cursor: pointer;
+color: #aaa; /* Màu của icon kính lúp */
+}
+
+/* Để căn giữa icon kính lúp */
+.search-icon i {
+
+font-size: 16px; /* Kích thước icon, điều chỉnh nếu cần thiết */
+}
+
+/* Thêm font-awesome CSS (đảm bảo bạn đã liên kết với font-awesome CSS trong trang EJS của bạn) */
+
+.my-4{
+text-align: center;
+}
+/* Định dạng mục danh mục sản phẩm */
+.nav-item {
+margin-bottom: 10px; /* Khoảng cách giữa các mục trong thanh danh mục */
+}
+
+.nav-link {
+display: flex; /* Dùng flexbox để căn chỉnh icon và văn bản theo hàng ngang */
+align-items: center; /* Căn chỉnh các phần tử con theo trục dọc */
+color: #333;
+text-decoration: none;
+transition: color 0.3s;
+}
+
+.nav-link i {
+margin-right: 5px; /* Khoảng cách giữa biểu tượng và văn bản */
+}
+
+.nav-link:hover {
+color: #007bff; /* Màu khi di chuột qua mục */
+}
+
+/* CSS tùy chỉnh cho dropdown */
+.dropdown-menu {
+position: absolute;
+top: 100%;
+left: 0;
+z-index: 1000;
+display: none;
+float: left;
+min-width: 10rem;
+padding: 0.5rem 0;
+margin: 0.125rem 0 0;
+font-size: 1rem;
+color: #212529;
+text-align: left;
+list-style: none;
+background-color: #fff;
+background-clip: padding-box;
+border: 1px solid rgba(0,0,0,0.15);
+border-radius: 0.25rem;
+}
+
+.dropdown-item {
+display: block;
+width: 100%;
+padding: 0.25rem 1.5rem;
+clear: both;
+font-weight: 400;
+color: #212529;
+text-align: inherit;
+white-space: nowrap;
+background-color: transparent;
+border: 0;
+}
+.dropdown-item:hover, .dropdown-item:focus {
+color: #007bff;
+text-decoration: none;
+background-color: #f8f9fa;
+}
+
+/* CSS để tạo ảnh bìa */
+.cover-image {
+  background-image: url(''); /* Thay đổi đường dẫn tới ảnh bìa  */
+  background-size: cover; /* Phủ kín nền trang web */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */
+  background-position: center; /* Căn giữa ảnh bìa */
+  height: 20rem; /* Chiều cao của ảnh bìa, ở đây mình để 100% chiều cao của viewport */
+  max-width: 100rem;
+}
+
+/* Thêm CSS cho thanh điều hướng */
+.navbar {
+  position: fixed; /* Để giữ thanh điều hướng cố định trên màn hình */
+  top: 0; /* Vị trí theo chiều dọc, ở đây là phía trên cùng của màn hình */
+  left: 0; /* Vị trí theo chiều ngang, ở đây là phía bên trái cùng của màn hình */
+  width: 100%; /* Chiều rộng của thanh điều hướng */
+  z-index: 999; /* Để đảm bảo thanh điều hướng hiển thị trên các phần tử khác */
+  background-color: #fff; /* Màu nền của thanh điều hướng */
+}
+
+/* Thêm padding-top cho phần nội dung trang web để tránh bị che phủ bởi thanh điều hướng */
+body {
+  padding-top: 70px; /* Điều chỉnh giá trị theo chiều cao của thanh điều hướng */
+}
+/* CSS cho footer */
+.footer {
+  background-color: #f8f8f8;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.footer p {
+  margin: 0;
+}
+.img-container {
+  text-align: center;
+}
+
+.img-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}

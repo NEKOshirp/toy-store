@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang quản lý</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+  float: left;
+}
+
+.sidebar-item {
+  padding: 10px;
+}
+
+.sidebar-item a {
+  display: block;
+  text-decoration: none;
+  color: #333;
+}
+
+.sidebar-item a:hover {
+  background-color: #ddd;
+}
+
+/* CSS cho phần nội dung chính */
+.container {
+  margin-left: 220px;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+/* CSS cho form thêm sản phẩm */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.col-md-4 {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 10px 15px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-text {
+  margin: 5px 0;
+}
+
+.btn-primary, .btn-danger {
+  padding: 5px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  margin-right: 5px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Nội dung HTML của trang quản lý -->
+  <div class="sidebar">
+    <div class="sidebar-item">
+      <a href="#users">Tài khoản người dùng</a>
+    </div>
+    <div class="sidebar-item">
+      <a href="#products">Sản phẩm</a>
+    </div>
+  </div>
+
+  <div class="container main-content">
+    <h1 class="my-4">Trang quản lý sản phẩm</h1>
+
+    <!-- Form thêm sản phẩm -->
+    <h2 id="products">Thêm sản phẩm</h2>
+    <form action="/admin/add" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="name">Tên sản phẩm</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Giá sản phẩm</label>
+        <input type="number" class="form-control" id="price" name="price" required>
+      </div>
+      <div class="form-group">
+        <label for="image">Ảnh sản phẩm</label>
+        <input type="file" class="form-control" id="image" name="image" required accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">Thêm</button>
+    </form>
+
+    <!-- Danh sách sản phẩm -->
+    <h2>Danh sách sản phẩm</h2>
+    <div class="row">
+      <% products.forEach((product) => { %>
+        <div class="col-md-4">
+          <div class="card">
+            <img src="<%= product.imageUrl %>" class="card-img-top" alt="Ảnh sản phẩm">
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text">Giá: <%= product.price %></p>
+              <a href="/admin/edit/<%= product._id %>" class="btn btn-primary">Sửa</a>
+              <form action="/admin/delete/<%= product._id %>" method="POST" style="display: inline-block;">
+                <button type="submit" class="btn btn-danger">Xóa</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
