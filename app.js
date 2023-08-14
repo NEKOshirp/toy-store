@@ -11,7 +11,6 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Kết nối tới cơ sở dữ liệu MongoDB
 mongoose.connect('mongodb+srv://truong:truong2001@cluster0.g2wdmun.mongodb.net/toys', {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -21,10 +20,6 @@ mongoose.connect('mongodb+srv://truong:truong2001@cluster0.g2wdmun.mongodb.net/t
   console.error('Lỗi kết nối MongoDB:', err);
 });
 
-
-
-
-// Định nghĩa Schema và Model cho sản phẩm
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -32,7 +27,7 @@ const productSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   imageUrl: {
     type: String
@@ -41,7 +36,6 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-// Định nghĩa Schema và Model cho người dùng
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -54,69 +48,38 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'], // Chỉ chấp nhận 'user' hoặc 'admin'
-    default: 'user' // Giá trị mặc định là 'user'
+    enum: ['user', 'admin'],
+    default: 'user'
   }
 });
 
 const User = mongoose.model('User', userSchema);
 
-// Cấu hình session
 app.use(session({
   secret: 'mysecretkey',
   resave: true,
   saveUninitialized: true
 }));
 
-// Cấu hình body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Cấu hình EJS làm view engine
 app.set('view engine', 'ejs');
-
-// Cấu hình Express phục vụ các tệp tĩnh từ thư mục public
 app.use(express.static('public'));
 
-// Trang chủ - Hiển thị danh sách sản phẩm và chức năng tìm kiếm
-app.get('/', async (req, res) => {
-  try {
-    // Lấy danh sách sản phẩm từ cơ sở dữ liệu
-    const products = await Product.find({});
-
-    // Kiểm tra xem người dùng đã nhập từ khóa tìm kiếm hay chưa
-    const searchKeyword = req.query.keyword || ''; // Lấy từ khóa tìm kiếm từ query parameters
-
-    // Lọc danh sách sản phẩm dựa trên từ khóa tìm kiếm
-    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchKeyword.toLowerCase()));
-
-    res.render('home', { loggedIn: req.session.loggedIn, products: filteredProducts });
-  } catch (err) {
-    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-    res.render('error', { message: 'Lỗi truy vấn cơ sở dữ liệu' });
-  }
-});
-
-// Hàm điều chỉnh kích thước ảnh trước khi lưu
 const resizeImage = async (file) => {
   const filePath = path.join('public/uploads', file.filename);
 
   try {
-    // Đọc ảnh từ đường dẫn filePath
     const imageBuffer = await sharp(filePath).toBuffer();
-
-    // Resize ảnh với kích thước mới (300x200)
     const resizedImageBuffer = await sharp(imageBuffer)
       .resize(300, 200)
       .toBuffer();
-
-    // Ghi ảnh đã resize vào đường dẫn filePath
     await sharp(resizedImageBuffer).toFile(filePath);
   } catch (err) {
     console.error('Lỗi điều chỉnh kích thước ảnh:', err);
   }
 };
 
-// Cấu hình multer để lưu ảnh vào thư mục public/uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'public/uploads');
@@ -128,34 +91,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Trang chủ - Hiển thị danh sách sản phẩm và chức năng tìm kiếm
 app.get('/', async (req, res) => {
   try {
-    // Lấy danh sách sản phẩm từ cơ sở dữ liệu
     const products = await Product.find({});
-    res.render('home', { loggedIn: req.session.loggedIn, products });
+    const searchKeyword = req.query.keyword || '';
+    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchKeyword.toLowerCase()));
+    res.render('home', { loggedIn: req.session.loggedIn, products: filteredProducts });
   } catch (err) {
     console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
     res.render('error', { message: 'Lỗi truy vấn cơ sở dữ liệu' });
   }
 });
 
-// Trang admin - Thêm, sửa và xóa sản phẩm
 app.get('/admin', async (req, res) => {
-  // Kiểm tra đăng nhập
   if (!req.session || !req.session.loggedIn) {
     res.redirect('/login');
     return;
   }
-
-  // Kiểm tra quyền của người dùng
   if (req.session.role !== 'admin') {
     res.render('error', { message: 'Ai dạy dùng tài khoản user để vào trang admin đấy :)?' });
     return;
   }
-
   try {
-    // Lấy danh sách sản phẩm từ cơ sở dữ liệu
     const products = await Product.find({});
     res.render('admin', { products: products });
   } catch (err) {
@@ -164,36 +121,26 @@ app.get('/admin', async (req, res) => {
   }
 });
 
-// Trang đăng nhập - hiển thị form đăng nhập
 app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-// Xử lý đăng nhập
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-
-  // Kiểm tra thông tin đăng nhập
   User.findOne({ username })
     .then(user => {
       if (!user) {
         res.render('login', { error: 'Sai tên đăng nhập hoặc mật khẩu' });
         return;
       }
-
-      // So sánh mật khẩu
       bcrypt.compare(password, user.password)
         .then(result => {
           if (!result) {
             res.render('login', { error: 'Sai tên đăng nhập hoặc mật khẩu' });
             return;
           }
-
-          // Đăng nhập thành công
           req.session.loggedIn = true;
-          req.session.role = user.role; // Lưu quyền của người dùng vào session
-
-          // Kiểm tra nếu người dùng là admin thì chuyển hướng đến trang admin
+          req.session.role = user.role;
           if (user.role === 'admin') {
             res.redirect('/admin');
           } else {
@@ -211,36 +158,25 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-// Trang đăng ký
 app.get('/register', (req, res) => {
   res.render('register', { error: null });
 });
 
-// Xử lý đăng ký
 app.post('/register', (req, res) => {
   const { username, password } = req.body;
-
-  // Kiểm tra thông tin đăng ký
   User.findOne({ username })
     .then(user => {
       if (user) {
         res.render('register', { error: 'Tên đăng nhập đã tồn tại' });
         return;
       }
-
-      // Tạo người dùng mới
       const newUser = new User({
         username,
         password
       });
-
-      // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
       bcrypt.hash(newUser.password, 10)
         .then(hashedPassword => {
           newUser.password = hashedPassword;
-
-          // Lưu người dùng vào cơ sở dữ liệu
           newUser.save()
             .then(() => {
               res.redirect('/login');
@@ -261,29 +197,31 @@ app.post('/register', (req, res) => {
     });
 });
 
-// Đăng xuất
 app.post('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-// Thêm sản phẩm
 app.post('/admin/add', upload.single('image'), (req, res) => {
-  // Kiểm tra đăng nhập
   if (!req.session || !req.session.loggedIn) {
     res.redirect('/login');
-    return;
+    return; 
   }
-
   const { name, price } = req.body;
-
-  // Lưu tên, giá và đường dẫn ảnh sản phẩm vào cơ sở dữ liệu
+  let errorMessage = ''; // Khởi tạo errorMessage
+  if (parseInt(price) < 20) {
+    errorMessage = 'Giá phải lớn hơn hoặc bằng 20.';
+  }
   const newProduct = new Product({
     name,
     price,
-    imageUrl: req.file ? '/uploads/' + req.file.filename : null, // Lưu đường dẫn ảnh vào cơ sở dữ liệu (nếu có)
+    imageUrl: req.file ? '/uploads/' + req.file.filename : null,
   });
-
+  if (errorMessage) {
+    // Truyền errorMessage vào khi render trang admin
+    res.render('admin', { products: [], errorMessage });
+    return;
+  }
   newProduct.save()
     .then(() => {
       res.redirect('/admin');
@@ -294,24 +232,19 @@ app.post('/admin/add', upload.single('image'), (req, res) => {
     });
 });
 
-// Sửa sản phẩm
+
 app.get('/admin/edit/:id', (req, res) => {
-  // Kiểm tra đăng nhập
   if (!req.session || !req.session.loggedIn) {
     res.redirect('/login');
     return;
   }
-
   const { id } = req.params;
-
-  // Tìm sản phẩm theo ID và hiển thị trang chỉnh sửa
   Product.findById(id)
     .then(product => {
       if (!product) {
         res.render('error', { message: 'Không tìm thấy sản phẩm' });
         return;
       }
-
       res.render('edit', { product });
     })
     .catch(err => {
@@ -320,19 +253,14 @@ app.get('/admin/edit/:id', (req, res) => {
     });
 });
 
-// Xử lý chỉnh sửa sản phẩm
 app.post('/admin/edit/:id', async (req, res) => {
-  // Kiểm tra đăng nhập
   if (!req.session || !req.session.loggedIn) {
     res.redirect('/login');
     return;
   }
-
   const { id } = req.params;
   const { name, price } = req.body;
-
   try {
-    // Tìm sản phẩm theo ID và cập nhật thông tin
     await Product.findByIdAndUpdate(id, { name, price });
     res.redirect('/admin');
   } catch (err) {
@@ -341,17 +269,12 @@ app.post('/admin/edit/:id', async (req, res) => {
   }
 });
 
-// Xóa sản phẩm
 app.post('/admin/delete/:id', (req, res) => {
-  // Kiểm tra quyền của người dùng
   if (!req.session || req.session.role !== 'admin') {
     res.redirect('/login');
     return;
   }
-
   const { id } = req.params;
-
-  // Xóa sản phẩm theo ID
   Product.findByIdAndDelete(id)
     .then(() => {
       res.redirect('/admin');
@@ -362,22 +285,16 @@ app.post('/admin/delete/:id', (req, res) => {
     });
 });
 
-// Trang quản lý tài khoản người dùng và quản lý tài khoản admin
 app.get('/manage-users', async (req, res) => {
-  // Kiểm tra đăng nhập
   if (!req.session || !req.session.loggedIn) {
     res.redirect('/login');
     return;
   }
-
-  // Kiểm tra quyền của người dùng
   if (req.session.role !== 'admin') {
     res.render('error', { message: 'Bạn không có quyền truy cập vào trang quản lý tài khoản' });
     return;
   }
-
   try {
-    // Lấy danh sách người dùng từ cơ sở dữ liệu (loại bỏ trường mật khẩu)
     const users = await User.find({}).select('-password');
     res.render('manage_users', { users });
   } catch (err) {
@@ -386,18 +303,13 @@ app.get('/manage-users', async (req, res) => {
   }
 });
 
-// Xóa người dùng
 app.post('/delete-user/:id', async (req, res) => {
-  // Kiểm tra quyền của người dùng
   if (!req.session || req.session.role !== 'admin') {
     res.redirect('/login');
     return;
   }
-
   const { id } = req.params;
-
   try {
-    // Xóa người dùng theo ID
     await User.findByIdAndDelete(id);
     res.redirect('/manage-users');
   } catch (err) {
@@ -406,26 +318,6 @@ app.post('/delete-user/:id', async (req, res) => {
   }
 });
 
-// Trang chủ - Hiển thị danh sách sản phẩm và chức năng tìm kiếm
-app.get('/', async (req, res) => {
-  try {
-    // Lấy danh sách sản phẩm từ cơ sở dữ liệu
-    const products = await Product.find({});
-
-    // Kiểm tra xem người dùng đã nhập từ khóa tìm kiếm hay chưa
-    const searchKeyword = req.query.keyword || ''; // Lấy từ khóa tìm kiếm từ query parameters
-
-    // Lọc danh sách sản phẩm dựa trên từ khóa tìm kiếm
-    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchKeyword.toLowerCase()));
-
-    res.render('home', { loggedIn: req.session.loggedIn, products: filteredProducts });
-  } catch (err) {
-    console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-    res.render('error', { message: 'Lỗi truy vấn cơ sở dữ liệu' });
-  }
-});
-
-// Khởi động server
 app.listen(port, () => {
   console.log(`Server đang lắng nghe tại http://localhost:${port}`);
 });

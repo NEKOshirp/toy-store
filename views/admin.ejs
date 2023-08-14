@@ -120,7 +120,35 @@
   background-color: #dc3545;
   border: none;
 }
+.error-message {
+  color: red;
+  font-size: 14px;
+  display: none; /* Ẩn thông báo ban đầu */
+  margin-top: 5px; /* Khoảng cách từ trường input lên thông báo lỗi */
+}
+/* CSS cho phần nội dung chính */
+.container {
+  margin-left: 220px;
+}
 
+.main-content {
+  padding: 20px;
+}
+
+/* ... (Các phần CSS khác) ... */
+
+/* Ẩn thông báo lỗi ban đầu */
+.error-message {
+  display: none;
+}
+
+/* Hiển thị thông báo lỗi sau khi nhập giá trị */
+.form-group.error .error-message {
+  display: block;
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
   </style>
 </head>
 <body>
@@ -137,23 +165,28 @@
   <div class="container main-content">
     <h1 class="my-4">Trang quản lý sản phẩm</h1>
 
-    <!-- Form thêm sản phẩm -->
-    <h2 id="products">Thêm sản phẩm</h2>
-    <form action="/admin/add" method="POST" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="name">Tên sản phẩm</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Giá sản phẩm</label>
-        <input type="number" class="form-control" id="price" name="price" required>
-      </div>
-      <div class="form-group">
-        <label for="image">Ảnh sản phẩm</label>
-        <input type="file" class="form-control" id="image" name="image" required accept="image/*">
-      </div>
-      <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
+<!-- Form thêm sản phẩm -->
+<h2 id="products">Thêm sản phẩm</h2>
+<form action="/admin/add" method="POST" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="name">Tên sản phẩm</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+  <% let errorMessage = null; %>
+  <div class="form-group <% if (errorMessage) { %>error<% } %>">
+    <label for="price">Giá sản phẩm</label>
+    <input type="number" class="form-control" id="price" name="price" required>
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <p class="error-message"><%= errorMessage %></p>
+    <% } %>
+  </div>
+  <div class="form-group">
+    <label for="image">Ảnh sản phẩm</label>
+    <input type="file" class="form-control" id="image" name="image" required accept="image/*">
+  </div>
+  <button type="submit" class="btn btn-primary">Thêm</button>
+</form>
+
 
     <!-- Danh sách sản phẩm -->
     <h2>Danh sách sản phẩm</h2>
@@ -175,7 +208,22 @@
       <% }) %>
     </div>
   </div>
+  <script>$(document).ready(function() {
+    $('#price').on('input', function() {
+      const price = $(this).val();
+      const formGroup = $(this).closest('.form-group');
+  
+      if (parseInt(price) < 20) {
+  errorMessage = 'Giá phải lớn hơn hoặc bằng 20.';
+  formGroup.addClass('error');
+} else {
+  errorMessage = null;
+  formGroup.removeClass('error');
+}
 
+    });
+  });
+  </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

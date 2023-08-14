@@ -7,7 +7,10 @@ const productSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    
+    required: true,
+    
   }
-});
+}
+);
 module.exports = mongoose.model('Product', productSchema);
