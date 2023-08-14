@@ -120,35 +120,18 @@
   background-color: #dc3545;
   border: none;
 }
+/* ...Các phần CSS khác... */
+
+.error {
+  border-color: red;
+}
+
 .error-message {
-  color: red;
-  font-size: 14px;
-  display: none; /* Ẩn thông báo ban đầu */
-  margin-top: 5px; /* Khoảng cách từ trường input lên thông báo lỗi */
-}
-/* CSS cho phần nội dung chính */
-.container {
-  margin-left: 220px;
-}
-
-.main-content {
-  padding: 20px;
-}
-
-/* ... (Các phần CSS khác) ... */
-
-/* Ẩn thông báo lỗi ban đầu */
-.error-message {
-  display: none;
-}
-
-/* Hiển thị thông báo lỗi sau khi nhập giá trị */
-.form-group.error .error-message {
-  display: block;
   color: red;
   font-size: 14px;
   margin-top: 5px;
 }
+
   </style>
 </head>
 <body>
@@ -172,8 +155,7 @@
     <label for="name">Tên sản phẩm</label>
     <input type="text" class="form-control" id="name" name="name" required>
   </div>
-  <% let errorMessage = null; %>
-  <div class="form-group <% if (errorMessage) { %>error<% } %>">
+  <div class="form-group <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>error<% } %>">
     <label for="price">Giá sản phẩm</label>
     <input type="number" class="form-control" id="price" name="price" required>
     <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
